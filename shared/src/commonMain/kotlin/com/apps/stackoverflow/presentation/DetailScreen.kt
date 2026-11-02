@@ -1,9 +1,9 @@
 package com.apps.stackoverflow.presentation
 
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -19,8 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,34 +34,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
 import com.apps.stackoverflow.domain.Question
-import com.example.stackoverflow.core.network.model.Answer
-import com.example.stackoverflow.core.network.model.AnswerSort
-import com.example.stackoverflow.core.network.model.Question
+import com.apps.stackoverflow.presentation.components.NoNetworkDialog
+import com.apps.stackoverflow.shared.resources.Res
+import com.apps.stackoverflow.shared.resources.detail_accepted_answer
+import com.apps.stackoverflow.shared.resources.detail_answer_votes_label
+import com.apps.stackoverflow.shared.resources.detail_answers_count
+import com.apps.stackoverflow.shared.resources.detail_back
+import com.apps.stackoverflow.shared.resources.detail_more_info
+import com.apps.stackoverflow.shared.resources.detail_viewed_times
+import com.apps.stackoverflow.shared.resources.sort_active
+import com.apps.stackoverflow.shared.resources.sort_oldest
+import com.apps.stackoverflow.shared.resources.sort_votes
+import com.apps.stackoverflow.utils.UrlLauncher
 import com.example.stackoverflow.core.ui.components.FullScreenError
 import com.example.stackoverflow.core.ui.components.FullScreenLoading
-import com.example.stackoverflow.core.ui.components.NoNetworkDialog
 import com.example.stackoverflow.core.ui.theme.Dimens
 import com.example.stackoverflow.core.ui.theme.StackOverflowOrange
 import com.example.stackoverflow.core.ui.theme.StackOverflowTheme
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DetailRoute(
     onBackClick: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel(),
+    viewModel: DetailViewModel = koinViewModel(),
+    urlLauncher: UrlLauncher = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     DetailScreen(
         uiState = uiState,
@@ -70,8 +77,8 @@ fun DetailRoute(
         onRetry = viewModel::retry,
         onMoreInfoClick = {
             val link = (uiState as? DetailUiState.Success)?.question?.link
-            if (link != null) {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+            if (!link.isNullOrBlank()) {
+                urlLauncher.openUrl(link)
             }
         },
     )
@@ -91,7 +98,7 @@ private fun DetailScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.detail_more_info),
+                        text = stringResource(Res.string.detail_more_info),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.clickable(onClick = onMoreInfoClick),
                     )
@@ -100,7 +107,7 @@ private fun DetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.detail_back),
+                            contentDescription = stringResource(Res.string.detail_back),
                         )
                     }
                 },
@@ -145,13 +152,13 @@ private fun DetailContent(
                 modifier = Modifier.padding(top = Dimens.SpacingS),
             )
             Text(
-                text = "Asked ${formatDateTime(question.createdAtEpochSeconds)}   " +
-                        stringResource(R.string.detail_viewed_times, question.viewCount),
+                text = "Asked ${question.createdAtEpochSeconds}   " +
+                        stringResource(Res.string.detail_viewed_times, question.viewCount),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = Dimens.SpacingXS),
             )
-            HtmlText(html = question.bodyHtml, modifier = Modifier.padding(top = Dimens.SpacingM))
+            //HtmlText(html = question.bodyHtml, modifier = Modifier.padding(top = Dimens.SpacingM))
 
             if (question.tags.isNotEmpty()) {
                 FlowRow(
@@ -166,7 +173,7 @@ private fun DetailContent(
                 name = question.ownerName,
                 avatarUrl = question.ownerAvatarUrl,
                 reputation = question.ownerReputation,
-                dateLabel = "Asked ${formatDateTime(question.createdAtEpochSeconds)}",
+                dateLabel = "Asked ${(question.createdAtEpochSeconds)}",
                 modifier = Modifier.padding(top = Dimens.SpacingL, bottom = Dimens.SpacingS),
             )
 
@@ -178,7 +185,7 @@ private fun DetailContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = stringResource(R.string.detail_answers_count, answers.size),
+                    text = stringResource(Res.string.detail_answers_count, answers.size),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -207,6 +214,7 @@ private fun DetailContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AnswerItem(answer: Answer) {
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -215,11 +223,11 @@ private fun AnswerItem(answer: Answer) {
             modifier = Modifier.padding(end = Dimens.SpacingL),
         ) {
             Text(text = "${answer.score}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(text = stringResource(R.string.detail_answer_votes_label), style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(Res.string.detail_answer_votes_label), style = MaterialTheme.typography.labelSmall)
             if (answer.isAccepted) {
                 Icon(
                     imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = stringResource(R.string.detail_accepted_answer),
+                    contentDescription = stringResource(Res.string.detail_accepted_answer),
                     tint = Color(0xFF5EBA7D),
                     modifier = Modifier.padding(top = Dimens.SpacingXS),
                 )
@@ -227,12 +235,12 @@ private fun AnswerItem(answer: Answer) {
         }
 
         Column(modifier = Modifier.weight(1f)) {
-            HtmlText(html = answer.bodyHtml)
+            //HtmlText(html = answer.bodyHtml)
             OwnerRow(
                 name = answer.ownerName,
                 avatarUrl = answer.ownerAvatarUrl,
                 reputation = answer.ownerReputation,
-                dateLabel = "Answered ${formatDateTime(answer.createdAtEpochSeconds)}",
+                dateLabel = "Answered ${(answer.createdAtEpochSeconds)}",
                 modifier = Modifier.padding(top = Dimens.SpacingM, bottom = Dimens.SpacingXS),
             )
         }
@@ -254,13 +262,13 @@ private fun OwnerRow(
             modifier = Modifier.padding(top = Dimens.SpacingXS),
         ) {
             if (avatarUrl != null) {
-                AsyncImage(
-                    model = avatarUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(Dimens.AvatarSize)
-                        .clip(CircleShape),
-                )
+//                AsyncImage(
+//                    model = avatarUrl,
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .size(Dimens.AvatarSize)
+//                        .clip(CircleShape),
+//                )
             }
             Column(modifier = Modifier.padding(start = Dimens.SpacingS)) {
                 Text(text = name, style = MaterialTheme.typography.bodySmall)
@@ -270,10 +278,10 @@ private fun OwnerRow(
     }
 }
 
-private fun AnswerSort.labelRes(): Int = when (this) {
-    AnswerSort.ACTIVE -> R.string.sort_active
-    AnswerSort.OLDEST -> R.string.sort_oldest
-    AnswerSort.VOTES -> R.string.sort_votes
+private fun AnswerSort.labelRes(): StringResource = when (this) {
+    AnswerSort.ACTIVE -> Res.string.sort_active
+    AnswerSort.OLDEST -> Res.string.sort_oldest
+    AnswerSort.VOTES -> Res.string.sort_votes
 }
 
 @Composable

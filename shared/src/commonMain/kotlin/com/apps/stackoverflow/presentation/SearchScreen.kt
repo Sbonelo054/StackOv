@@ -34,37 +34,49 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.apps.stackoverflow.domain.Question
+import com.apps.stackoverflow.presentation.components.NoNetworkDialog
+import com.apps.stackoverflow.shared.resources.Res
+import com.apps.stackoverflow.shared.resources.compose_multiplatform
+import com.apps.stackoverflow.utils.formatAskedDate
+import com.example.stackoverflow.core.ui.components.FullScreenError
+import com.example.stackoverflow.core.ui.components.FullScreenLoading
+import com.example.stackoverflow.core.ui.theme.Dimens
+import com.example.stackoverflow.core.ui.theme.StackOverflowBlack
+import com.example.stackoverflow.core.ui.theme.StackOverflowBlue
+import com.example.stackoverflow.core.ui.theme.StackOverflowGray
+import com.example.stackoverflow.core.ui.theme.StackOverflowOrange
+import com.example.stackoverflow.core.ui.theme.StackOverflowTheme
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SearchRoute(
     onQuestionClick: (Long) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel(),
+    viewModel: SearchViewModel = koinViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val recentSearches by viewModel.recentSearches.collectAsStateWithLifecycle()
+    //val recentSearches by viewModel.recentSearches.collectAsStateWithLifecycle()
 
     SearchScreen(
         query = query,
         uiState = uiState,
-        recentSearches = recentSearches,
+        //recentSearches = recentSearches,
         onQueryChange = viewModel::onQueryChange,
         onSearch = viewModel::search,
         onRetry = viewModel::retry,
         onDismissNoNetwork = viewModel::dismissNoNetwork,
         onQuestionClick = onQuestionClick,
-        onRecentSearchClick = viewModel::onRecentSearchClick,
-        onClearRecentSearches = viewModel::onClearRecentSearches,
+        //onRecentSearchClick = viewModel::onRecentSearchClick,
+        //onClearRecentSearches = viewModel::onClearRecentSearches,
     )
 }
 
@@ -73,39 +85,39 @@ fun SearchRoute(
 private fun SearchScreen(
     query: String,
     uiState: SearchUiState,
-    recentSearches: List<String>,
+    //recentSearches: List<String>,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onRetry: () -> Unit,
     onDismissNoNetwork: () -> Unit,
     onQuestionClick: (Long) -> Unit,
-    onRecentSearchClick: (String) -> Unit,
-    onClearRecentSearches: () -> Unit,
+    //onRecentSearchClick: (String) -> Unit,
+    //onClearRecentSearches: () -> Unit,
 ) {
     Scaffold(
-        modifier = padding(Dimens.SpacingXS),
+        modifier = Modifier.padding(Dimens.SpacingXS),
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.search_menu))
+                        Icon(Icons.Filled.Menu, contentDescription = "search menu")
                     }
                 },
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            painter = painterResource(CoreUiR.drawable.stack_overflow_icon),
+                            painter = painterResource(Res.drawable.compose_multiplatform),
                             contentDescription = null,
                             tint = Color.Unspecified,
-                            modifier = size(Dimens.AvatarSize),
+                            modifier = Modifier.size(Dimens.AvatarSize),
                         )
                         Text(
-                            text = stringResource(R.string.search_logo_stack),
+                            text = "search logo stack",
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(start = Dimens.SpacingXS),
                         )
                         Text(
-                            text = stringResource(R.string.search_logo_overflow),
+                            text = "search_logo_overflow",
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -121,7 +133,7 @@ private fun SearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(Dimens.SpacingM),
-                    placeholder = { Text(stringResource(R.string.search_placeholder)) },
+                    placeholder = { Text("Search") },
                     leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                     singleLine = true,
                     shape = RoundedCornerShape(Dimens.SearchBarCornerRadius),
@@ -137,19 +149,22 @@ private fun SearchScreen(
             }
 
             when (uiState) {
-                is SearchUiState.Idle -> if (recentSearches.isNotEmpty()) {
-                    RecentSearchesSection(
-                        recentSearches = recentSearches,
-                        onRecentSearchClick = onRecentSearchClick,
-                        onClearRecentSearches = onClearRecentSearches,
-                    )
-                }
+                is SearchUiState.Idle -> {}
+//                    if (recentSearches.isNotEmpty()) {
+//                    RecentSearchesSection(
+//                        recentSearches = recentSearches,
+//                        onRecentSearchClick = onRecentSearchClick,
+//                        onClearRecentSearches = onClearRecentSearches,
+//                    )
+//                }
 
                 is SearchUiState.Loading -> FullScreenLoading()
 
                 is SearchUiState.Error -> FullScreenError(message = uiState.message)
 
-                is SearchUiState.NoNetwork -> NoNetworkDialog(onDismiss = onDismissNoNetwork, onRetry = onRetry)
+                is SearchUiState.NoNetwork -> {
+                    NoNetworkDialog(onDismiss = onDismissNoNetwork, onRetry = onRetry)
+                }
 
                 is SearchUiState.Success -> QuestionList(
                     questions = uiState.questions,
@@ -174,13 +189,13 @@ private fun RecentSearchesSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.search_recent_searches_title),
+                text = "search_recent_searches_title",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f),
             )
             TextButton(onClick = onClearRecentSearches) {
-                Text(stringResource(R.string.search_recent_searches_clear))
+                Text("search_recent_searches_clear")
             }
         }
 
@@ -247,12 +262,12 @@ private fun QuestionRow(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(R.string.search_question_title_prefix, stripHtml(question.title)),
+                text = "search_question_title_prefix",
                 color = StackOverflowBlue,
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
-                text = stripHtml(question.bodyHtml),
+                text = question.bodyHtml,
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 3,
                 color = StackOverflowGray,
@@ -260,7 +275,7 @@ private fun QuestionRow(
             )
             Text(
                 text = buildAnnotatedString {
-                    append(stringResource(R.string.search_asked_by_prefix, formatAskedDate(question.createdAtEpochSeconds)))
+                    append("search_asked_by_prefix", formatAskedDate(question.createdAtEpochSeconds))
                     append(" ")
                     withStyle(SpanStyle(color = StackOverflowBlue)) {
                         append(question.ownerName)
@@ -279,24 +294,24 @@ private fun QuestionRow(
                 .align(Alignment.CenterVertically),
         ) {
             Text(
-                text = stringResource(R.string.search_answers_count, question.answerCount),
+                text = "${question.answerCount}",
                 style = MaterialTheme.typography.labelSmall,
                 color = StackOverflowGray,
             )
             Text(
-                text = stringResource(R.string.search_votes_count, question.score),
+                text = "${question.score}",
                 style = MaterialTheme.typography.labelSmall,
                 color = StackOverflowGray,
             )
             Text(
-                text = stringResource(R.string.search_views_count, question.viewCount),
+                text = "search_views_count ${question.viewCount}",
                 style = MaterialTheme.typography.labelSmall,
                 color = StackOverflowGray,
             )
         }
 
         Icon(
-            painter = painterResource(R.drawable.ic_chevron_right),
+            painter = painterResource(Res.drawable.compose_multiplatform),
             contentDescription = null,
             tint = Color.Black,
             modifier = Modifier
@@ -332,14 +347,14 @@ private fun SearchScreenPreview() {
         SearchScreen(
             query = "",
             uiState = SearchUiState.Success(sampleQuestions),
-            recentSearches = emptyList(),
+           // recentSearches = emptyList(),
             onQueryChange = {},
             onSearch = {},
             onRetry = {},
             onDismissNoNetwork = {},
             onQuestionClick = {},
-            onRecentSearchClick = {},
-            onClearRecentSearches = {},
+           // onRecentSearchClick = {},
+           // onClearRecentSearches = {},
         )
     }
 }
@@ -351,14 +366,14 @@ private fun SearchScreenIdleWithRecentSearchesPreview() {
         SearchScreen(
             query = "",
             uiState = SearchUiState.Idle,
-            recentSearches = listOf("android compose", "kotlin coroutines", "retrofit"),
+           // recentSearches = listOf("android compose", "kotlin coroutines", "retrofit"),
             onQueryChange = {},
             onSearch = {},
             onRetry = {},
             onDismissNoNetwork = {},
             onQuestionClick = {},
-            onRecentSearchClick = {},
-            onClearRecentSearches = {},
+           // onRecentSearchClick = {},
+           // onClearRecentSearches = {},
         )
     }
 }

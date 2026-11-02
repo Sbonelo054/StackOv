@@ -1,6 +1,5 @@
-package com.example.stackoverflow.core.network.repository
+package com.apps.stackoverflow.domain.contracts.repository
 
-import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepository
 import com.apps.stackoverflow.data.remote.StackExchangeApi
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort

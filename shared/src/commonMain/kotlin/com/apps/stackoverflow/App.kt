@@ -14,10 +14,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.apps.stackoverflow.shared.resources.Res
+import com.apps.stackoverflow.shared.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
-
-import stackoverflow.shared.generated.resources.Res
-import stackoverflow.shared.generated.resources.compose_multiplatform
 
 @Composable
 @Preview

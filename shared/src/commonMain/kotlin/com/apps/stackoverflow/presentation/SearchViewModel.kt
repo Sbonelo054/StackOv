@@ -1,28 +1,22 @@
 package com.apps.stackoverflow.presentation
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.stackoverflow.core.network.connectivity.NetworkMonitor
+import com.apps.stackoverflow.data.remote.NetworkMonitor
 import com.apps.stackoverflow.domain.contracts.repository.RecentSearchesRepository
 import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.io.IOException
-import javax.inject.Inject
+import kotlinx.io.IOException
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+class SearchViewModel(
     private val repository: StackOverflowRepository,
-    private val recentSearchesRepository: RecentSearchesRepository,
+    //private val recentSearchesRepository: RecentSearchesRepository,
     networkMonitor: NetworkMonitor,
-    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     val isOnline: StateFlow<Boolean> = networkMonitor.isOnline
@@ -33,8 +27,7 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Idle)
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
-    val recentSearches: StateFlow<List<String>> = recentSearchesRepository.recentSearches
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    //val recentSearches: StateFlow<List<String>> = recentSearchesRepository.recentSearches.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     init {
         if (!isOnline.value) {
@@ -56,7 +49,7 @@ class SearchViewModel @Inject constructor(
 
     fun onClearRecentSearches() {
         viewModelScope.launch {
-            recentSearchesRepository.clear()
+       //     recentSearchesRepository.clear()
         }
     }
 
@@ -71,14 +64,14 @@ class SearchViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = SearchUiState.Loading
-            recentSearchesRepository.addSearch(trimmedQuery)
+           // recentSearchesRepository.addSearch(trimmedQuery)
             repository.searchQuestions(trimmedQuery)
                 .onSuccess { questions -> _uiState.value = SearchUiState.Success(questions) }
                 .onFailure { error ->
                     _uiState.value = if (error is IOException) {
                         SearchUiState.NoNetwork
                     } else {
-                        SearchUiState.Error(error.message ?: context.getString(R.string.search_generic_error))
+                        SearchUiState.Error(error.message ?: "Search generic error")
                     }
                 }
         }

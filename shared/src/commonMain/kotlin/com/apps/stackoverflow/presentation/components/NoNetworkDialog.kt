@@ -1,4 +1,4 @@
-package com.example.stackoverflow.core.ui.components
+package com.apps.stackoverflow.presentation.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
@@ -8,8 +8,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import com.example.stackoverflow.core.ui.R
+import com.apps.stackoverflow.shared.resources.Res
+import com.apps.stackoverflow.shared.resources.no_network_dismiss
+import com.apps.stackoverflow.shared.resources.no_network_message
+import com.apps.stackoverflow.shared.resources.no_network_retry
+import com.apps.stackoverflow.shared.resources.no_network_title
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun NoNetworkDialog(
@@ -25,16 +29,16 @@ fun NoNetworkDialog(
                 tint = MaterialTheme.colorScheme.error,
             )
         },
-        title = { Text(stringResource(R.string.no_network_title)) },
-        text = { Text(stringResource(R.string.no_network_message)) },
+        title = { Text(stringResource(Res.string.no_network_title)) },
+        text = { Text(stringResource(Res.string.no_network_message)) },
         confirmButton = {
             TextButton(onClick = onRetry) {
-                Text(stringResource(R.string.no_network_retry))
+                Text(stringResource(Res.string.no_network_retry))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.no_network_dismiss))
+                Text(stringResource(Res.string.no_network_dismiss))
             }
         },
     )
