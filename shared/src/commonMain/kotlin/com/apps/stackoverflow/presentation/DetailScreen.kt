@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +53,7 @@ import com.apps.stackoverflow.shared.resources.sort_active
 import com.apps.stackoverflow.shared.resources.sort_oldest
 import com.apps.stackoverflow.shared.resources.sort_votes
 import com.apps.stackoverflow.utils.UrlLauncher
+import com.apps.stackoverflow.utils.parseHtmlToAnnotatedString
 import com.example.stackoverflow.core.ui.components.FullScreenError
 import com.example.stackoverflow.core.ui.components.FullScreenLoading
 import com.example.stackoverflow.core.ui.theme.Dimens
@@ -136,6 +138,22 @@ private fun DetailScreen(
 }
 
 @Composable
+fun HtmlText(
+    html: String,
+    modifier: Modifier = Modifier
+) {
+    val annotatedText = remember(html) {
+        parseHtmlToAnnotatedString(html)
+    }
+
+    Text(
+        text = annotatedText,
+        modifier = modifier.fillMaxWidth(),
+        style = MaterialTheme.typography.bodyMedium
+    )
+}
+
+@Composable
 private fun DetailContent(
     question: Question,
     answers: List<Answer>,
@@ -158,7 +176,7 @@ private fun DetailContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = Dimens.SpacingXS),
             )
-            //HtmlText(html = question.bodyHtml, modifier = Modifier.padding(top = Dimens.SpacingM))
+            HtmlText(html = question.bodyHtml, modifier = Modifier.padding(top = Dimens.SpacingM))
 
             if (question.tags.isNotEmpty()) {
                 FlowRow(

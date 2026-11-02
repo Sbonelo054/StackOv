@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -44,8 +45,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apps.stackoverflow.domain.Question
 import com.apps.stackoverflow.presentation.components.NoNetworkDialog
 import com.apps.stackoverflow.shared.resources.Res
-import com.apps.stackoverflow.shared.resources.compose_multiplatform
+import com.apps.stackoverflow.shared.resources.ic_chevron_right
+import com.apps.stackoverflow.shared.resources.search_answers_count
+import com.apps.stackoverflow.shared.resources.search_asked_by_prefix
+import com.apps.stackoverflow.shared.resources.search_logo_overflow
+import com.apps.stackoverflow.shared.resources.search_logo_stack
+import com.apps.stackoverflow.shared.resources.search_menu
+import com.apps.stackoverflow.shared.resources.search_placeholder
+import com.apps.stackoverflow.shared.resources.search_question_title_prefix
+import com.apps.stackoverflow.shared.resources.search_recent_searches_clear
+import com.apps.stackoverflow.shared.resources.search_recent_searches_title
+import com.apps.stackoverflow.shared.resources.search_views_count
+import com.apps.stackoverflow.shared.resources.search_votes_count
+import com.apps.stackoverflow.shared.resources.stack_overflow_icon
 import com.apps.stackoverflow.utils.formatAskedDate
+import com.apps.stackoverflow.utils.stripHtml
 import com.example.stackoverflow.core.ui.components.FullScreenError
 import com.example.stackoverflow.core.ui.components.FullScreenLoading
 import com.example.stackoverflow.core.ui.theme.Dimens
@@ -55,6 +69,7 @@ import com.example.stackoverflow.core.ui.theme.StackOverflowGray
 import com.example.stackoverflow.core.ui.theme.StackOverflowOrange
 import com.example.stackoverflow.core.ui.theme.StackOverflowTheme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -64,19 +79,16 @@ fun SearchRoute(
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    //val recentSearches by viewModel.recentSearches.collectAsStateWithLifecycle()
 
     SearchScreen(
         query = query,
         uiState = uiState,
-        //recentSearches = recentSearches,
         onQueryChange = viewModel::onQueryChange,
         onSearch = viewModel::search,
         onRetry = viewModel::retry,
         onDismissNoNetwork = viewModel::dismissNoNetwork,
         onQuestionClick = onQuestionClick,
-        //onRecentSearchClick = viewModel::onRecentSearchClick,
-        //onClearRecentSearches = viewModel::onClearRecentSearches,
+
     )
 }
 
@@ -85,14 +97,11 @@ fun SearchRoute(
 private fun SearchScreen(
     query: String,
     uiState: SearchUiState,
-    //recentSearches: List<String>,
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onRetry: () -> Unit,
     onDismissNoNetwork: () -> Unit,
     onQuestionClick: (Long) -> Unit,
-    //onRecentSearchClick: (String) -> Unit,
-    //onClearRecentSearches: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.padding(Dimens.SpacingXS),
@@ -100,24 +109,24 @@ private fun SearchScreen(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Menu, contentDescription = "search menu")
+                        Icon(Icons.Filled.Menu, contentDescription = stringResource(Res.string.search_menu))
                     }
                 },
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            painter = painterResource(Res.drawable.compose_multiplatform),
+                            painter = painterResource(Res.drawable.stack_overflow_icon),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier.size(Dimens.AvatarSize),
                         )
                         Text(
-                            text = "search logo stack",
+                            text = stringResource(Res.string.search_logo_stack),
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(start = Dimens.SpacingXS),
                         )
                         Text(
-                            text = "search_logo_overflow",
+                            text = stringResource(Res.string.search_logo_overflow),
                             fontWeight = FontWeight.Bold,
                         )
                     }
@@ -133,7 +142,7 @@ private fun SearchScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(Dimens.SpacingM),
-                    placeholder = { Text("Search") },
+                    placeholder = { Text(stringResource(Res.string.search_placeholder)) },
                     leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                     singleLine = true,
                     shape = RoundedCornerShape(Dimens.SearchBarCornerRadius),
@@ -150,6 +159,7 @@ private fun SearchScreen(
 
             when (uiState) {
                 is SearchUiState.Idle -> {}
+
 //                    if (recentSearches.isNotEmpty()) {
 //                    RecentSearchesSection(
 //                        recentSearches = recentSearches,
@@ -162,9 +172,7 @@ private fun SearchScreen(
 
                 is SearchUiState.Error -> FullScreenError(message = uiState.message)
 
-                is SearchUiState.NoNetwork -> {
-                    NoNetworkDialog(onDismiss = onDismissNoNetwork, onRetry = onRetry)
-                }
+                is SearchUiState.NoNetwork -> NoNetworkDialog(onDismiss = onDismissNoNetwork, onRetry = onRetry)
 
                 is SearchUiState.Success -> QuestionList(
                     questions = uiState.questions,
@@ -189,13 +197,13 @@ private fun RecentSearchesSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "search_recent_searches_title",
+                text = stringResource(Res.string.search_recent_searches_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f),
             )
             TextButton(onClick = onClearRecentSearches) {
-                Text("search_recent_searches_clear")
+                Text(stringResource(Res.string.search_recent_searches_clear))
             }
         }
 
@@ -262,12 +270,12 @@ private fun QuestionRow(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "search_question_title_prefix",
+                text = stringResource(Res.string.search_question_title_prefix, stripHtml(question.title)),
                 color = StackOverflowBlue,
                 style = MaterialTheme.typography.titleSmall,
             )
             Text(
-                text = question.bodyHtml,
+                text = stripHtml(question.bodyHtml),
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 3,
                 color = StackOverflowGray,
@@ -275,7 +283,7 @@ private fun QuestionRow(
             )
             Text(
                 text = buildAnnotatedString {
-                    append("search_asked_by_prefix", formatAskedDate(question.createdAtEpochSeconds))
+                    append(stringResource(Res.string.search_asked_by_prefix, formatAskedDate(question.createdAtEpochSeconds)))
                     append(" ")
                     withStyle(SpanStyle(color = StackOverflowBlue)) {
                         append(question.ownerName)
@@ -294,24 +302,24 @@ private fun QuestionRow(
                 .align(Alignment.CenterVertically),
         ) {
             Text(
-                text = "${question.answerCount}",
+                text = stringResource(Res.string.search_answers_count, question.answerCount),
                 style = MaterialTheme.typography.labelSmall,
                 color = StackOverflowGray,
             )
             Text(
-                text = "${question.score}",
+                text = stringResource(Res.string.search_votes_count, question.score),
                 style = MaterialTheme.typography.labelSmall,
                 color = StackOverflowGray,
             )
             Text(
-                text = "search_views_count ${question.viewCount}",
+                text = stringResource(Res.string.search_views_count, question.viewCount),
                 style = MaterialTheme.typography.labelSmall,
                 color = StackOverflowGray,
             )
         }
 
         Icon(
-            painter = painterResource(Res.drawable.compose_multiplatform),
+            painter = painterResource(Res.drawable.ic_chevron_right),
             contentDescription = null,
             tint = Color.Black,
             modifier = Modifier
@@ -330,7 +338,7 @@ private fun SearchScreenPreview() {
             id = index.toLong(),
             title = "Presenting modal in android 13 fullscreen",
             bodyHtml = "Testing testing. " +
-                "Now it's not fullscreen by default and when I try to slide down, the app just dismiss the.....",
+                    "Now it's not fullscreen by default and when I try to slide down, the app just dismiss the.....",
             tags = listOf("ios", "viewcontroller"),
             ownerName = "pascalbros",
             ownerAvatarUrl = null,
@@ -347,33 +355,16 @@ private fun SearchScreenPreview() {
         SearchScreen(
             query = "",
             uiState = SearchUiState.Success(sampleQuestions),
-           // recentSearches = emptyList(),
+            //recentSearches = emptyList(),
             onQueryChange = {},
             onSearch = {},
             onRetry = {},
             onDismissNoNetwork = {},
             onQuestionClick = {},
-           // onRecentSearchClick = {},
-           // onClearRecentSearches = {},
+            //onRecentSearchClick = {},
+            //onClearRecentSearches = {},
         )
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun SearchScreenIdleWithRecentSearchesPreview() {
-    StackOverflowTheme {
-        SearchScreen(
-            query = "",
-            uiState = SearchUiState.Idle,
-           // recentSearches = listOf("android compose", "kotlin coroutines", "retrofit"),
-            onQueryChange = {},
-            onSearch = {},
-            onRetry = {},
-            onDismissNoNetwork = {},
-            onQuestionClick = {},
-           // onRecentSearchClick = {},
-           // onClearRecentSearches = {},
-        )
-    }
-}
+
