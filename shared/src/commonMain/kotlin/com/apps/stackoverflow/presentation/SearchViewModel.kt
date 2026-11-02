@@ -3,13 +3,10 @@ package com.apps.stackoverflow.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apps.stackoverflow.data.remote.NetworkMonitor
-import com.apps.stackoverflow.domain.contracts.repository.RecentSearchesRepository
 import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 
@@ -24,7 +21,7 @@ class SearchViewModel(
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
 
-    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Idle)
+    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Loading)
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
     //val recentSearches: StateFlow<List<String>> = recentSearchesRepository.recentSearches.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -39,17 +36,6 @@ class SearchViewModel(
         _query.value = newQuery
         if (newQuery.isBlank()) {
             _uiState.value = SearchUiState.Idle
-        }
-    }
-
-    fun onRecentSearchClick(recentQuery: String) {
-        _query.value = recentQuery
-        search()
-    }
-
-    fun onClearRecentSearches() {
-        viewModelScope.launch {
-       //     recentSearchesRepository.clear()
         }
     }
 

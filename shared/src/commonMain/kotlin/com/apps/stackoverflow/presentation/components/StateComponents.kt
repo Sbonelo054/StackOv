@@ -1,4 +1,4 @@
-package com.example.stackoverflow.core.ui.components
+package com.apps.stackoverflow.presentation.components
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -24,9 +24,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
-// Coordinates lifted from the stack_overflow_icon vector's 120x120 viewport, split into the
-// discrete shapes the logo is actually built from (a base tray + 5 flame bars), listed bottom to
-// top so they can be revealed one at a time.
 private val baseShapePoints = listOf(
     84.4f to 93.8f,
     84.4f to 70.6f,
@@ -60,8 +57,6 @@ private val logoShapesBottomToTop = listOf(
 @Composable
 fun AnimatedStackOverflowLogo(modifier: Modifier = Modifier) {
     val transition = rememberInfiniteTransition(label = "loading")
-    // Progress sweeps from 0 to shapes.size while drawing, then keeps climbing for a short hold
-    // at "fully drawn" before snapping back to 0 and restarting.
     val progress by transition.animateFloat(
         initialValue = 0f,
         targetValue = logoShapesBottomToTop.size + 2f,

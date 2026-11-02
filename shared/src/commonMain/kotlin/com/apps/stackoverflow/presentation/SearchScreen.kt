@@ -34,7 +34,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -60,8 +59,8 @@ import com.apps.stackoverflow.shared.resources.search_votes_count
 import com.apps.stackoverflow.shared.resources.stack_overflow_icon
 import com.apps.stackoverflow.utils.formatAskedDate
 import com.apps.stackoverflow.utils.stripHtml
-import com.example.stackoverflow.core.ui.components.FullScreenError
-import com.example.stackoverflow.core.ui.components.FullScreenLoading
+import com.apps.stackoverflow.presentation.components.FullScreenError
+import com.apps.stackoverflow.presentation.components.FullScreenLoading
 import com.example.stackoverflow.core.ui.theme.Dimens
 import com.example.stackoverflow.core.ui.theme.StackOverflowBlack
 import com.example.stackoverflow.core.ui.theme.StackOverflowBlue
@@ -160,13 +159,7 @@ private fun SearchScreen(
             when (uiState) {
                 is SearchUiState.Idle -> {}
 
-//                    if (recentSearches.isNotEmpty()) {
-//                    RecentSearchesSection(
-//                        recentSearches = recentSearches,
-//                        onRecentSearchClick = onRecentSearchClick,
-//                        onClearRecentSearches = onClearRecentSearches,
-//                    )
-//                }
+//
 
                 is SearchUiState.Loading -> FullScreenLoading()
 

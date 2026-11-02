@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -54,8 +52,8 @@ import com.apps.stackoverflow.shared.resources.sort_oldest
 import com.apps.stackoverflow.shared.resources.sort_votes
 import com.apps.stackoverflow.utils.UrlLauncher
 import com.apps.stackoverflow.utils.parseHtmlToAnnotatedString
-import com.example.stackoverflow.core.ui.components.FullScreenError
-import com.example.stackoverflow.core.ui.components.FullScreenLoading
+import com.apps.stackoverflow.presentation.components.FullScreenError
+import com.apps.stackoverflow.presentation.components.FullScreenLoading
 import com.example.stackoverflow.core.ui.theme.Dimens
 import com.example.stackoverflow.core.ui.theme.StackOverflowOrange
 import com.example.stackoverflow.core.ui.theme.StackOverflowTheme
