@@ -25,13 +25,13 @@ The repository also contains an iOS application target. **Current status:** the 
 - **In-memory question cache:** Retain retrieved questions by ID for navigation to the details screen.
 - **Automated tests:** Android host tests for search and details ViewModels and the repository.
 
+
 ## Screenshots
 
-> Add screenshots of the running Android app to `screenshots/` and update the paths below.
-
-| Search | Results | Question details |
+| Search | Results | Question Details |
 |:---:|:---:|:---:|
-| _Screenshot coming soon_ | _Screenshot coming soon_ | _Screenshot coming soon_ |
+| <img width="180" height="400" alt="Search" src="https://github.com/user-attachments/assets/30636a5d-aa85-46ba-bcd9-06a09c086595" /> | <img width="180" height="400" alt="Results" src="https://github.com/user-attachments/assets/a8fa7f4b-610a-458d-8462-4d9808b93567" /> | <img width="180" height="400" alt="Question Details" src="https://github.com/user-attachments/assets/16a5715a-26c4-4cb6-b290-f59325f9650e" /> |
+
 
 ## Tech stack
 
