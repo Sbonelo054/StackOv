@@ -1,4 +1,4 @@
-package com.apps.stackoverflow.domain.contracts.repository
+package com.apps.stackoverflow.domain.contracts
 
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort

@@ -93,7 +93,7 @@ fun AnimatedStackOverflowLogo(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FullScreenLoading(modifier: Modifier = Modifier) {
+fun LoadingScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -104,7 +104,7 @@ fun FullScreenLoading(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FullScreenError(
+fun ErrorScreen(
     message: String,
     modifier: Modifier = Modifier,
 ) {

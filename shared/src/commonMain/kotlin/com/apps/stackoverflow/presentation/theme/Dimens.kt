@@ -1,4 +1,4 @@
-package com.example.stackoverflow.core.ui.theme
+package com.apps.stackoverflow.presentation.theme
 
 import androidx.compose.ui.unit.dp
 

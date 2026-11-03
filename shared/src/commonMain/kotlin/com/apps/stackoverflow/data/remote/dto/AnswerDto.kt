@@ -1,4 +1,4 @@
-package com.example.stackoverflow.core.network.remote.dto
+package com.apps.stackoverflow.data.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -2,8 +2,8 @@ package com.apps.stackoverflow.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.apps.stackoverflow.data.remote.NetworkMonitor
-import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepository
+import com.apps.stackoverflow.data.NetworkMonitor
+import com.apps.stackoverflow.domain.contracts.StackOverflowRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,6 @@ import kotlinx.io.IOException
 
 class SearchViewModel(
     private val repository: StackOverflowRepository,
-    //private val recentSearchesRepository: RecentSearchesRepository,
     networkMonitor: NetworkMonitor,
 ) : ViewModel() {
 
@@ -21,10 +20,8 @@ class SearchViewModel(
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
 
-    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Loading)
+    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Idle)
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
-
-    //val recentSearches: StateFlow<List<String>> = recentSearchesRepository.recentSearches.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     init {
         if (!isOnline.value) {
@@ -32,7 +29,7 @@ class SearchViewModel(
         }
     }
 
-    fun onQueryChange(newQuery: String) {
+    fun updateSearchText(newQuery: String) {
         _query.value = newQuery
         if (newQuery.isBlank()) {
             _uiState.value = SearchUiState.Idle
@@ -40,8 +37,8 @@ class SearchViewModel(
     }
 
     fun search() {
-        val trimmedQuery = _query.value.trim()
-        if (trimmedQuery.isEmpty()) return
+        val searchTerm = _query.value.trim()
+        if (searchTerm.isEmpty()) return
 
         if (!isOnline.value) {
             _uiState.value = SearchUiState.NoNetwork
@@ -50,8 +47,7 @@ class SearchViewModel(
 
         viewModelScope.launch {
             _uiState.value = SearchUiState.Loading
-           // recentSearchesRepository.addSearch(trimmedQuery)
-            repository.searchQuestions(trimmedQuery)
+            repository.searchQuestions(searchTerm)
                 .onSuccess { questions -> _uiState.value = SearchUiState.Success(questions) }
                 .onFailure { error ->
                     _uiState.value = if (error is IOException) {
@@ -71,7 +67,7 @@ class SearchViewModel(
         }
     }
 
-    fun dismissNoNetwork() {
+    fun closeOfflineNotice() {
         _uiState.value = SearchUiState.Idle
     }
 }

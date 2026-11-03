@@ -1,7 +1,6 @@
 package com.apps.stackoverflow.di
-import com.apps.stackoverflow.domain.contracts.repository.RecentSearchesRepository
-import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepository
-import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepositoryImpl
+import com.apps.stackoverflow.domain.contracts.StackOverflowRepository
+import com.apps.stackoverflow.data.remote.repository.StackOverflowRepositoryImpl
 import org.koin.dsl.module
 
 val repositoryModule = module{

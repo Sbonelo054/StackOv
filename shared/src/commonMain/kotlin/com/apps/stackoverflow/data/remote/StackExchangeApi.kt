@@ -1,5 +1,6 @@
 package com.apps.stackoverflow.data.remote
-import com.example.stackoverflow.core.network.remote.dto.AnswersResponseDto
+
+import com.apps.stackoverflow.data.remote.dto.AnswersResponseDto
 import com.apps.stackoverflow.data.remote.dto.SearchResponseDto
 
 interface StackExchangeApi {

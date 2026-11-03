@@ -1,22 +1,21 @@
 package com.apps.stackoverflow.presentation
 
-import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.apps.stackoverflow.data.remote.NetworkMonitor
+import com.apps.stackoverflow.data.NetworkMonitor
 import com.apps.stackoverflow.domain.AnswerSort
-import com.apps.stackoverflow.domain.contracts.repository.StackOverflowRepository
+import com.apps.stackoverflow.domain.contracts.StackOverflowRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.io.IOException
 
 class DetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: StackOverflowRepository,
     private val networkMonitor: NetworkMonitor,
-    //private val context: Context,
 ) : ViewModel() {
 
     private val questionId: Long = checkNotNull(savedStateHandle["questionId"])
@@ -25,19 +24,19 @@ class DetailViewModel(
     val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
     init {
-        loadAnswers(AnswerSort.ACTIVE)
+        fetchAnswers(AnswerSort.ACTIVE)
     }
 
-    fun onSortSelected(sort: AnswerSort) {
-        loadAnswers(sort)
+    fun selectAnswerOrder(sort: AnswerSort) {
+        fetchAnswers(sort)
     }
 
     fun retry() {
         val currentSort = (_uiState.value as? DetailUiState.Success)?.sort ?: AnswerSort.ACTIVE
-        loadAnswers(currentSort)
+        fetchAnswers(currentSort)
     }
 
-    private fun loadAnswers(sort: AnswerSort) {
+    private fun fetchAnswers(sort: AnswerSort) {
         val question = repository.getCachedQuestion(questionId)
         if (question == null) {
             _uiState.value = DetailUiState.Error("detail question not found")
@@ -56,7 +55,7 @@ class DetailViewModel(
                     _uiState.value = DetailUiState.Success(question, answers, sort)
                 }
                 .onFailure { error ->
-                    _uiState.value = if (error is Exception) {
+                    _uiState.value = if (error is IOException) {
                         DetailUiState.NoNetwork
                     } else {
                         DetailUiState.Error(error.message ?: "Generic error")

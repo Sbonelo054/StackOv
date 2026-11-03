@@ -1,9 +1,10 @@
-package com.apps.stackoverflow.domain.contracts.repository
+package com.apps.stackoverflow.data.remote.repository
 
 import com.apps.stackoverflow.data.remote.StackExchangeApi
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
 import com.apps.stackoverflow.domain.Question
+import com.apps.stackoverflow.domain.contracts.StackOverflowRepository
 import com.apps.stackoverflow.domain.toDomain
 
 class StackOverflowRepositoryImpl(

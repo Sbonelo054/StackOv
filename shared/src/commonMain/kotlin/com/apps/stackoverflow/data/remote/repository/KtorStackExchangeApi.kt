@@ -1,6 +1,7 @@
-package com.apps.stackoverflow.data.remote
+package com.apps.stackoverflow.data.remote.repository
 
-import com.example.stackoverflow.core.network.remote.dto.AnswersResponseDto
+import com.apps.stackoverflow.data.remote.StackExchangeApi
+import com.apps.stackoverflow.data.remote.dto.AnswersResponseDto
 import com.apps.stackoverflow.data.remote.dto.SearchResponseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -21,7 +22,7 @@ class KtorStackExchangeApi(
     ): SearchResponseDto {
 
         return client.get(
-            "${StackExchangeApi.BASE_URL}search/advanced"
+            "${StackExchangeApi.Companion.BASE_URL}search/advanced"
         ) {
             parameter("title", title)
             parameter("pagesize", pageSize)
@@ -41,7 +42,7 @@ class KtorStackExchangeApi(
     ): AnswersResponseDto {
 
         return client.get(
-            "${StackExchangeApi.BASE_URL}questions/$questionId/answers"
+            "${StackExchangeApi.Companion.BASE_URL}questions/$questionId/answers"
         ) {
             parameter("order", order)
             parameter("sort", sort)

@@ -3,7 +3,6 @@ package com.apps.stackoverflow.presentation
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -28,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +37,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
 import com.apps.stackoverflow.domain.Question
+import com.apps.stackoverflow.presentation.components.ErrorScreen
+import com.apps.stackoverflow.presentation.components.LoadingScreen
 import com.apps.stackoverflow.presentation.components.NoNetworkDialog
+import com.apps.stackoverflow.presentation.components.RichQuestionText
+import com.apps.stackoverflow.presentation.theme.Dimens
+import com.apps.stackoverflow.presentation.theme.StackOverflowGray
+import com.apps.stackoverflow.presentation.theme.StackOverflowOrange
 import com.apps.stackoverflow.shared.resources.Res
 import com.apps.stackoverflow.shared.resources.detail_accepted_answer
 import com.apps.stackoverflow.shared.resources.detail_answer_votes_label
@@ -51,12 +55,6 @@ import com.apps.stackoverflow.shared.resources.sort_active
 import com.apps.stackoverflow.shared.resources.sort_oldest
 import com.apps.stackoverflow.shared.resources.sort_votes
 import com.apps.stackoverflow.utils.UrlLauncher
-import com.apps.stackoverflow.utils.parseHtmlToAnnotatedString
-import com.apps.stackoverflow.presentation.components.FullScreenError
-import com.apps.stackoverflow.presentation.components.FullScreenLoading
-import com.example.stackoverflow.core.ui.theme.Dimens
-import com.example.stackoverflow.core.ui.theme.StackOverflowOrange
-import com.example.stackoverflow.core.ui.theme.StackOverflowTheme
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -73,7 +71,7 @@ fun DetailRoute(
     DetailScreen(
         uiState = uiState,
         onBackClick = onBackClick,
-        onSortSelected = viewModel::onSortSelected,
+        selectAnswerOrder = viewModel::selectAnswerOrder,
         onRetry = viewModel::retry,
         onMoreInfoClick = {
             val link = (uiState as? DetailUiState.Success)?.question?.link
@@ -89,7 +87,7 @@ fun DetailRoute(
 private fun DetailScreen(
     uiState: DetailUiState,
     onBackClick: () -> Unit,
-    onSortSelected: (AnswerSort) -> Unit,
+    selectAnswerOrder: (AnswerSort) -> Unit,
     onRetry: () -> Unit,
     onMoreInfoClick: () -> Unit,
 ) {
@@ -99,7 +97,7 @@ private fun DetailScreen(
                 title = {
                     Text(
                         text = stringResource(Res.string.detail_more_info),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = StackOverflowGray,
                         modifier = Modifier.clickable(onClick = onMoreInfoClick),
                     )
                 },
@@ -115,9 +113,9 @@ private fun DetailScreen(
         },
     ) { innerPadding ->
         when (uiState) {
-            is DetailUiState.Loading -> FullScreenLoading(modifier = Modifier.padding(innerPadding))
+            is DetailUiState.Loading -> LoadingScreen(modifier = Modifier.padding(innerPadding))
 
-            is DetailUiState.Error -> FullScreenError(
+            is DetailUiState.Error -> ErrorScreen(
                 message = uiState.message,
                 modifier = Modifier.padding(innerPadding),
             )
@@ -128,35 +126,21 @@ private fun DetailScreen(
                 question = uiState.question,
                 answers = uiState.answers,
                 selectedSort = uiState.sort,
-                onSortSelected = onSortSelected,
+                selectAnswerOrder = selectAnswerOrder,
                 modifier = Modifier.padding(innerPadding),
             )
         }
     }
 }
 
-@Composable
-fun HtmlText(
-    html: String,
-    modifier: Modifier = Modifier
-) {
-    val annotatedText = remember(html) {
-        parseHtmlToAnnotatedString(html)
-    }
 
-    Text(
-        text = annotatedText,
-        modifier = modifier.fillMaxWidth(),
-        style = MaterialTheme.typography.bodyMedium
-    )
-}
 
 @Composable
 private fun DetailContent(
     question: Question,
     answers: List<Answer>,
     selectedSort: AnswerSort,
-    onSortSelected: (AnswerSort) -> Unit,
+    selectAnswerOrder: (AnswerSort) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier.fillMaxSize().padding(horizontal = Dimens.SpacingL)) {
@@ -174,7 +158,7 @@ private fun DetailContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = Dimens.SpacingXS),
             )
-            HtmlText(html = question.bodyHtml, modifier = Modifier.padding(top = Dimens.SpacingM))
+            RichQuestionText(html = question.bodyHtml, modifier = Modifier.padding(top = Dimens.SpacingM))
 
             if (question.tags.isNotEmpty()) {
                 FlowRow(
@@ -207,7 +191,7 @@ private fun DetailContent(
                 )
                 Row {
                     AnswerSort.entries.forEach { sort ->
-                        TextButton(onClick = { onSortSelected(sort) }) {
+                        TextButton(onClick = { selectAnswerOrder(sort) }) {
                             Text(
                                 text = stringResource(sort.labelRes()),
                                 fontWeight = if (sort == selectedSort) FontWeight.Bold else FontWeight.Normal,
@@ -251,7 +235,7 @@ private fun AnswerItem(answer: Answer) {
         }
 
         Column(modifier = Modifier.weight(1f)) {
-            //HtmlText(html = answer.bodyHtml)
+            RichQuestionText(html = answer.bodyHtml)
             OwnerRow(
                 name = answer.ownerName,
                 avatarUrl = answer.ownerAvatarUrl,
@@ -313,44 +297,3 @@ private fun TagChip(tag: String) {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun DetailScreenPreview() {
-    val sampleQuestion = Question(
-        id = 1L,
-        title = "Presenting modal in iOS 13 fullscreen",
-        bodyHtml = "<p>In iOS 13 there is a new behaviour for modal view controller when being presented.</p>",
-        tags = listOf("ios", "viewcontroller", "modalviewcontroller"),
-        ownerName = "Lewis Dholpin",
-        ownerAvatarUrl = null,
-        ownerReputation = 2382,
-        isAnswered = true,
-        viewCount = 678,
-        answerCount = 27,
-        score = 430,
-        createdAtEpochSeconds = 1_559_577_600L,
-        link = null,
-    )
-    val sampleAnswers = listOf(
-        Answer(
-            id = 1L,
-            questionId = 1L,
-            bodyHtml = "<p>I add an information that could be useful for someone...</p>",
-            ownerName = "Lewis Dholpin",
-            ownerAvatarUrl = null,
-            ownerReputation = 2382,
-            isAccepted = true,
-            score = 528,
-            createdAtEpochSeconds = 1_559_577_600L,
-        ),
-    )
-    StackOverflowTheme {
-        DetailScreen(
-            uiState = DetailUiState.Success(sampleQuestion, sampleAnswers, AnswerSort.VOTES),
-            onBackClick = {},
-            onSortSelected = {},
-            onRetry = {},
-            onMoreInfoClick = {},
-        )
-    }
-}

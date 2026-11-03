@@ -1,6 +1,6 @@
 package com.apps.stackoverflow.di
 
-import com.apps.stackoverflow.data.remote.KtorStackExchangeApi
+import com.apps.stackoverflow.data.remote.repository.KtorStackExchangeApi
 import com.apps.stackoverflow.data.remote.StackExchangeApi
 import org.koin.dsl.module
 

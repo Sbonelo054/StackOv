@@ -1,4 +1,4 @@
-package com.apps.stackoverflow.data.remote
+package com.apps.stackoverflow.data
 
 import kotlinx.coroutines.flow.StateFlow
 

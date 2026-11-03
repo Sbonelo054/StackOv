@@ -1,6 +1,6 @@
 package com.apps.stackoverflow.domain
 
-import com.example.stackoverflow.core.network.remote.dto.AnswerDto
+import com.apps.stackoverflow.data.remote.dto.AnswerDto
 import com.apps.stackoverflow.data.remote.dto.QuestionDto
 
 fun QuestionDto.toDomain(): Question = Question(

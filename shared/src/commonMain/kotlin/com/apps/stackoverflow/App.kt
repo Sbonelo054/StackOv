@@ -31,7 +31,7 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+                Text("Welcome to stack overflow app")
             }
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
