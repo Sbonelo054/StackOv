@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
 import com.apps.stackoverflow.domain.Question
@@ -263,13 +264,13 @@ private fun OwnerRow(
             modifier = Modifier.padding(top = Dimens.SpacingXS),
         ) {
             if (avatarUrl != null) {
-//                AsyncImage(
-//                    model = avatarUrl,
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .size(Dimens.AvatarSize)
-//                        .clip(CircleShape),
-//                )
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(Dimens.AvatarSize)
+                        .clip(CircleShape),
+                )
             }
             Column(modifier = Modifier.padding(start = Dimens.SpacingS)) {
                 Text(text = name, style = MaterialTheme.typography.bodySmall)
