@@ -7,7 +7,7 @@ interface QuestionsService {
 
     suspend fun searchQuestions(
         title: String,
-        pageSize: Int = 20,
+        pageSize: Int = 15,
         order: String = "desc",
         sort: String = "activity",
         site: String = "stackoverflow",

@@ -71,14 +71,14 @@ kotlin {
             implementation(libs.navigation.compose)
 
             // Coil 3
-            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+            implementation(libs.coil.compose)
+            implementation(libs.coil3.coil.network.ktor3)
 
             // Koin 4
-            implementation("io.insert-koin:koin-core:4.0.4")
-            implementation("io.insert-koin:koin-compose:4.0.4")
-            implementation("io.insert-koin:koin-compose-viewmodel:4.0.4")
-            implementation("io.insert-koin:koin-core-viewmodel:4.0.4")
+            implementation(libs.koin.core.v404)
+            implementation(libs.insert.koin.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.core.viewmodel)
 
             // Ktor
             implementation(libs.ktor.client.core)
@@ -94,11 +94,6 @@ kotlin {
 
             // Android networking
             implementation(libs.ktor.client.okhttp)
-
-            // Keep Retrofit only if Android-specific code uses it
-            implementation(libs.retrofit.core)
-            implementation(libs.retrofit.converter.gson)
-            implementation(libs.okhttp.logging)
 
             // Android-specific Koin integration
             implementation(libs.koin.android)
@@ -116,19 +111,13 @@ kotlin {
         getByName("androidHostTest").dependencies {
             implementation(libs.kotlin.test)
 
-            implementation(
-                "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"
-            )
+            implementation(libs.kotlinx.coroutines.test)
 
-            implementation("io.mockk:mockk:1.14.9")
+            implementation(libs.mockk)
 
-            implementation(
-                "org.junit.jupiter:junit-jupiter-api:5.11.4"
-            )
+            implementation(libs.junit.jupiter.api)
 
-            implementation(
-                "org.junit.jupiter:junit-jupiter-engine:5.11.4"
-            )
+            implementation(libs.junit.jupiter.engine)
         }
 
         getByName("androidDeviceTest").dependencies {

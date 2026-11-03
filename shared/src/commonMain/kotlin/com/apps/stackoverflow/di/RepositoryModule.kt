@@ -8,8 +8,4 @@ val repositoryModule = module{
 single<StackOverflowRepository> {
     StackOverflowRepositoryImpl(get())
 }
-
-//    single<RecentSearchesRepository>{
-//
-//    }
 }

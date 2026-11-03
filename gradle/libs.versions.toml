@@ -10,11 +10,17 @@ androidx-espresso = "3.7.0"
 androidx-lifecycle = "2.11.0"
 androidx-testExt = "1.3.0"
 androidx-testRunner = "1.7.0"
+coilCompose = "3.6.3"
+coilNetworkKtor3 = "3.6.3"
 composeMultiplatform = "1.12.2"
 junit = "4.13.2"
+junitJupiterApi = "6.1.3"
+koinCore = "4.0.4"
 kotlin = "2.4.21"
+kotlinxCoroutinesTest = "1.11.0"
 material3 = "1.12.0-alpha03"
 
+mockk = "1.14.11"
 navigationComposeVersion = "2.10.0"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
@@ -25,6 +31,14 @@ navigationCompose = "2.10.2"
 serialization = "1.8.1"
 
 [libraries]
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil3-coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilNetworkKtor3" }
+insert-koin-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCore" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterApi" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinCore" }
+koin-core-v404 = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-core-viewmodel = { module = "io.insert-koin:koin-core-viewmodel", version.ref = "koinCore" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -44,6 +58,8 @@ compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMul
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
 
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }

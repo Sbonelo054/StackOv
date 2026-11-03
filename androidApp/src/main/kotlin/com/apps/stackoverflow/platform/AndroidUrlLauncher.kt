@@ -2,8 +2,8 @@ package com.apps.stackoverflow.platform
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.apps.stackoverflow.utils.UrlLauncher
+import androidx.core.net.toUri
 
 class AndroidUrlLauncher(
     private val context: Context
@@ -12,7 +12,7 @@ class AndroidUrlLauncher(
     override fun openUrl(url: String) {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse(url)
+            url.toUri()
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
