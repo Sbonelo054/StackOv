@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 
-class DetailViewModel(
+class QuestionDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: StackOverflowRepository,
     private val networkMonitor: NetworkMonitor,
@@ -20,8 +20,8 @@ class DetailViewModel(
 
     private val questionId: Long = checkNotNull(savedStateHandle["questionId"])
 
-    private val _uiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
-    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<QuestionDetailsUiState>(QuestionDetailsUiState.Loading)
+    val uiState: StateFlow<QuestionDetailsUiState> = _uiState.asStateFlow()
 
     init {
         fetchAnswers(AnswerSort.ACTIVE)
@@ -32,33 +32,33 @@ class DetailViewModel(
     }
 
     fun retry() {
-        val currentSort = (_uiState.value as? DetailUiState.Success)?.sort ?: AnswerSort.ACTIVE
+        val currentSort = (_uiState.value as? QuestionDetailsUiState.Success)?.sort ?: AnswerSort.ACTIVE
         fetchAnswers(currentSort)
     }
 
     private fun fetchAnswers(sort: AnswerSort) {
         val question = repository.getCachedQuestion(questionId)
         if (question == null) {
-            _uiState.value = DetailUiState.Error("detail question not found")
+            _uiState.value = QuestionDetailsUiState.Error("detail question not found")
             return
         }
 
         if (!networkMonitor.isOnline.value) {
-            _uiState.value = DetailUiState.NoNetwork
+            _uiState.value = QuestionDetailsUiState.NoNetwork
             return
         }
 
         viewModelScope.launch {
-            _uiState.value = DetailUiState.Loading
+            _uiState.value = QuestionDetailsUiState.Loading
             repository.getAnswers(questionId, sort)
                 .onSuccess { answers ->
-                    _uiState.value = DetailUiState.Success(question, answers, sort)
+                    _uiState.value = QuestionDetailsUiState.Success(question, answers, sort)
                 }
                 .onFailure { error ->
                     _uiState.value = if (error is IOException) {
-                        DetailUiState.NoNetwork
+                        QuestionDetailsUiState.NoNetwork
                     } else {
-                        DetailUiState.Error(error.message ?: "Generic error")
+                        QuestionDetailsUiState.Error(error.message ?: "Generic error")
                     }
                 }
         }

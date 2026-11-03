@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
@@ -63,7 +64,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun DetailRoute(
     onBackClick: () -> Unit,
-    viewModel: DetailViewModel = koinViewModel(),
+    viewModel: QuestionDetailsViewModel = koinViewModel(),
     urlLauncher: UrlLauncher = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -74,7 +75,7 @@ fun DetailRoute(
         selectAnswerOrder = viewModel::selectAnswerOrder,
         onRetry = viewModel::retry,
         onMoreInfoClick = {
-            val link = (uiState as? DetailUiState.Success)?.question?.link
+            val link = (uiState as? QuestionDetailsUiState.Success)?.question?.link
             if (!link.isNullOrBlank()) {
                 urlLauncher.openUrl(link)
             }
@@ -85,7 +86,7 @@ fun DetailRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailScreen(
-    uiState: DetailUiState,
+    uiState: QuestionDetailsUiState,
     onBackClick: () -> Unit,
     selectAnswerOrder: (AnswerSort) -> Unit,
     onRetry: () -> Unit,
@@ -113,16 +114,16 @@ private fun DetailScreen(
         },
     ) { innerPadding ->
         when (uiState) {
-            is DetailUiState.Loading -> LoadingScreen(modifier = Modifier.padding(innerPadding))
+            is QuestionDetailsUiState.Loading -> LoadingScreen(modifier = Modifier.padding(innerPadding))
 
-            is DetailUiState.Error -> ErrorScreen(
+            is QuestionDetailsUiState.Error -> ErrorScreen(
                 message = uiState.message,
                 modifier = Modifier.padding(innerPadding),
             )
 
-            is DetailUiState.NoNetwork -> NoNetworkDialog(onDismiss = onBackClick, onRetry = onRetry)
+            is QuestionDetailsUiState.NoNetwork -> NoNetworkDialog(onDismiss = onBackClick, onRetry = onRetry)
 
-            is DetailUiState.Success -> DetailContent(
+            is QuestionDetailsUiState.Success -> DetailContent(
                 question = uiState.question,
                 answers = uiState.answers,
                 selectedSort = uiState.sort,

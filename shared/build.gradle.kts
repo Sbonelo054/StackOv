@@ -65,18 +65,15 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.navigation.compose)
+            implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.3.0")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
 
             implementation("io.insert-koin:koin-core:4.0.4")
             implementation("io.insert-koin:koin-compose:4.0.4")
             implementation("io.insert-koin:koin-compose-viewmodel:4.0.4")
             implementation("io.insert-koin:koin-core-viewmodel:4.0.4")
-
-//            implementation(libs.retrofit.core)
-//            implementation(libs.retrofit.converter.gson)
-//            implementation(libs.okhttp.logging)
-//            implementation(libs.koin.core)
-//            implementation(libs.koin.android)
-//            implementation(libs.koin.compose)
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

@@ -1,7 +1,7 @@
 package com.apps.stackoverflow.di
 
-import com.apps.stackoverflow.data.remote.repository.KtorStackExchangeApi
-import com.apps.stackoverflow.data.remote.StackExchangeApi
+import com.apps.stackoverflow.data.remote.repository.KtorQuestionsService
+import com.apps.stackoverflow.data.remote.QuestionsService
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -10,8 +10,8 @@ val networkModule = module {
         HttpClientFactory.create()
     }
 
-    single<StackExchangeApi> {
-        KtorStackExchangeApi(
+    single<QuestionsService> {
+        KtorQuestionsService(
             client = get()
         )
     }

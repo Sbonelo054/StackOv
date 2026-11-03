@@ -3,7 +3,7 @@ package com.apps.stackoverflow.data.remote
 import com.apps.stackoverflow.data.remote.dto.AnswersResponseDto
 import com.apps.stackoverflow.data.remote.dto.SearchResponseDto
 
-interface StackExchangeApi {
+interface QuestionsService {
 
     suspend fun searchQuestions(
         title: String,

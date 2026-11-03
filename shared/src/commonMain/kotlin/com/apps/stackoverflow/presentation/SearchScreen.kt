@@ -47,7 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SearchRoute(
     onQuestionSelected: (Long) -> Unit,
-    viewModel: SearchViewModel = koinViewModel(),
+    viewModel: QuestionSearchViewModel = koinViewModel(),
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

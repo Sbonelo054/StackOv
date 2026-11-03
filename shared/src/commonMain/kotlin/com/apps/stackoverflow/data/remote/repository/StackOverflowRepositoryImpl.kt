@@ -1,6 +1,6 @@
 package com.apps.stackoverflow.data.remote.repository
 
-import com.apps.stackoverflow.data.remote.StackExchangeApi
+import com.apps.stackoverflow.data.remote.QuestionsService
 import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
 import com.apps.stackoverflow.domain.Question
@@ -8,7 +8,7 @@ import com.apps.stackoverflow.domain.contracts.StackOverflowRepository
 import com.apps.stackoverflow.domain.toDomain
 
 class StackOverflowRepositoryImpl(
-    private val api: StackExchangeApi,
+    private val api: QuestionsService,
 ) : StackOverflowRepository {
 
     private val questionCache = HashMap<Long, Question>()

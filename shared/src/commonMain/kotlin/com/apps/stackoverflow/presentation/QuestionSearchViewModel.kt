@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 
-class SearchViewModel(
+class QuestionSearchViewModel(
     private val repository: StackOverflowRepository,
     networkMonitor: NetworkMonitor,
 ) : ViewModel() {

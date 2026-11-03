@@ -4,13 +4,13 @@ import com.apps.stackoverflow.domain.Answer
 import com.apps.stackoverflow.domain.AnswerSort
 import com.apps.stackoverflow.domain.Question
 
-sealed interface DetailUiState {
-    data object Loading : DetailUiState
+sealed interface QuestionDetailsUiState {
+    data object Loading : QuestionDetailsUiState
     data class Success(
         val question: Question,
         val answers: List<Answer>,
         val sort: AnswerSort,
-    ) : DetailUiState
-    data class Error(val message: String) : DetailUiState
-    data object NoNetwork : DetailUiState
+    ) : QuestionDetailsUiState
+    data class Error(val message: String) : QuestionDetailsUiState
+    data object NoNetwork : QuestionDetailsUiState
 }
